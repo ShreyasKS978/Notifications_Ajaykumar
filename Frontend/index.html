@@ -30,7 +30,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--light);
+            background: white;
             color: var(--dark);
             min-height: 100vh;
             display: flex;
@@ -205,7 +205,7 @@
         }
 
         .notification-item {
-            background: var(--light);
+            background: linear-gradient(rgb(231, 231, 255),rgb(248, 255, 248));
             border-radius: var(--border-radius);
             padding: 1.5rem;
             margin-bottom: 1rem;
@@ -221,13 +221,13 @@
         }
 
         .notification-item p {
-            color: var(--gray);
+            color: black;
             margin-bottom: 0.5rem;
         }
 
         .notification-item .timestamp {
-            font-size: 0.85rem;
-            color: var(--gray);
+            font-size: 0.55rem;
+            color: black;
         }
 
         .no-data {
@@ -277,12 +277,12 @@
     <div class="container">
         <div class="main-content">
             <div class="form-container">
-                <h2 class="form-title">View Notifications</h2>
+               
                 <div class="form-group">
                     <label for="employeeId">Employee ID</label>
-                    <input type="text" id="employeeId" placeholder="e.g., ATS0123" required
+                    <input type="text" id="employeeId" placeholder="ATS0xxx" required
                            pattern="^[ATS]{3}0(?!000)[0-9]{3}$"
-                           title="Employee ID must be ATS0xxx (e.g., ATS0123, not ATS0000)">
+                           title="Employee ID must be ATS0xxx (not ATS0000)">
                     <p class="error-message" id="employeeIdError">Invalid employee ID format</p>
                 </div>
                 <button class="btn" onclick="fetchNotifications()"><i class="fas fa-search"></i> View Notifications</button>

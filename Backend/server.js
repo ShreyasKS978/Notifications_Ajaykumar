@@ -7,15 +7,7 @@ console.log('Starting server setup...');
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-console.log('Environment variables:', {
-    PG_USER: process.env.PG_USER,
-    PG_HOST: process.env.PG_HOST,
-    PG_DATABASE: process.env.PG_DATABASE,
-    PG_PORT: process.env.PG_PORT,
-    PORT: port
-});
-
+ 
 const pool = new Pool({
     user: process.env.PG_USER || 'postgres',
     host: process.env.PG_HOST || 'localhost',
@@ -46,13 +38,16 @@ async function createTables() {
     }
 }
 
-app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:5501', 'http://127.0.0.1:5502'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-}));
+// With this:
+const corsOptions = {
+  origin: ['http://127.0.0.1:5503', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('Notifications'));
 
 app.get('/api/health', (req, res) => {
     console.log('Health check requested');

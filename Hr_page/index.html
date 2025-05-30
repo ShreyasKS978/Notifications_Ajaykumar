@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Notification Portal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -31,7 +30,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--light);
+            background: white;
             color: var(--dark);
             min-height: 100vh;
             display: flex;
@@ -291,7 +290,7 @@
     <div class="container">
         <div class="main-content">
             <div class="form-container">
-                <h2 class="form-title">Send Notification</h2>
+                
                 <form id="notificationForm" class="notification-form">
                     <div class="form-group">
                         <label for="department">Department</label>
@@ -302,18 +301,18 @@
                     </div>
                     <div class="form-group hidden" id="employeeIdGroup">
                         <label for="employeeId">Employee ID</label>
-                        <input type="text" id="employeeId" placeholder="e.g., ATS0123">
-                        <p class="error-message" id="employeeIdError">Invalid employee ID format</p>
+                        <input type="text" id="employeeId" placeholder="e.g., ATS0xxx" minlength="7" maxlength="7">
+                        <p class="error-message" id="employeeIdError">Invalid employee ID format (e.g., ATS0123)</p>
                     </div>
                     <div class="form-group">
                         <label for="title">Notification Title</label>
-                        <input type="text" id="title" placeholder="Notification Title" required>
-                        <p class="error-message" id="titleError">Invalid title format</p>
+                        <input type="text" id="title" placeholder="Notification Title" required minlength="5" maxlength="100">
+                        <p class="error-message" id="titleError">No leading/trailing spaces or consecutive spaces allowed</p>
                     </div>
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="messageText" placeholder="Notification message..." required></textarea>
-                        <p class="error-message" id="textError">Invalid message</p>
+                        <textarea id="message" placeholder="Notification message..." required minlength="10" maxlength="250"></textarea>
+                        <p class="error-message" id="messageError">No leading/trailing spaces or consecutive spaces allowed</p>
                     </div>
                     <button type="submit" class="btn">Send Notification</button>
                 </form>
@@ -363,7 +362,7 @@
                 const field = document.getElementById(fieldId);
                 const errorElement = document.getElementById(errorId);
                 field.addEventListener('input', () => {
-                    const value = field.value.trim();
+                    const value = field.value;
                     const isValid = validator(value);
                     errorElement.textContent = errorMessage;
                     errorElement.style.display = isValid ? 'none' : 'block';
@@ -371,12 +370,17 @@
                 });
             }
 
+            const spaceValidator = value => {
+                if (!value) return false; // Required field
+                return !/^\s|\s$|\s{2,}/.test(value); // No leading/trailing/consecutive spaces
+            };
+
             setupValidation('employeeId', 'employeeIdError', 'Invalid employee ID format (e.g., ATS0123)', 
                 value => value === '' || /^[ATS]{3}0(?!000)[0-9]{3}$/.test(value));
-            setupValidation('title', 'titleError', 'No leading/trailing spaces or consecutive spaces', 
-                value => /^(?!\s)(?!.*\s{2})[A-Za-z0-9\s.,!?-]+(?<!\s)$/.test(value));
-            setupValidation('messageText', 'textError', 'No leading/trailing spaces or consecutive spaces', 
-                value => /^(?!\text)(?!.*\s{2})[A-Za-z0-9\s.,!?-]+(?<!\s)$/.test(value));
+            setupValidation('title', 'titleError', 'No leading/trailing spaces or consecutive spaces allowed', 
+                value => spaceValidator(value) && /^[A-Za-z0-9.,!?-]+(\s[A-Za-z0-9.,!?-]+)*$/.test(value));
+            setupValidation('message', 'messageError', 'No leading/trailing spaces or consecutive spaces allowed', 
+                value => spaceValidator(value) && /^[A-Za-z0-9.,!?-]+(\s[A-Za-z0-9.,!?-]+)*$/.test(value));
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -399,7 +403,7 @@
                     employeeId: department === 'Particular Employee' && employeeId ? employeeId : null,
                     department: department !== 'Particular Employee' ? department : null,
                     title: document.getElementById('title').value.trim(),
-                    message: document.getElementById('messageText').value.trim(),
+                    message: document.getElementById('message').value.trim(),
                 };
 
                 try {
@@ -421,8 +425,9 @@
                     confirmation.classList.add('show');
                     setTimeout(() => confirmation.classList.remove('show'), 3000);
                 } catch (error) {
-                    document.getElementById('employeeIdError').textContent = `Error sending notification: ${error.message}`;
+                    document.getElementById('employeeIdError').textContent = `Error: ${error.message}`;
                     document.getElementById('employeeIdError').style.display = 'block';
+                    console.error('Submission error:', error);
                 }
             });
 
