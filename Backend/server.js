@@ -12,7 +12,7 @@ const host = '0.0.0.0'; // Bind to all interfaces
 // Database connection pool
 const pool = new Pool({
     user: process.env.PG_USER || 'postgres',
-    host: process.env.PG_HOST || '54.166.206.245',
+    host: process.env.PG_HOST || 'postgres',
     database: process.env.PG_DATABASE || 'new_employee_db',
     password: process.env.PG_PASSWORD || 'admin123',
     port: process.env.PG_PORT || 5432,
