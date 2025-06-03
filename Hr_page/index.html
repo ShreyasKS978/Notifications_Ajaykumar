@@ -290,7 +290,6 @@
     <div class="container">
         <div class="main-content">
             <div class="form-container">
-                
                 <form id="notificationForm" class="notification-form">
                     <div class="form-group">
                         <label for="department">Department</label>
@@ -302,7 +301,7 @@
                     <div class="form-group hidden" id="employeeIdGroup">
                         <label for="employeeId">Employee ID</label>
                         <input type="text" id="employeeId" placeholder="e.g., ATS0xxx" minlength="7" maxlength="7">
-                        <p class="error-message" id="employeeIdError">Invalid employee ID format (e.g., ATS0123)</p>
+                        <p class="error-message" id="employeeIdError">Invalid employee ID format</p>
                     </div>
                     <div class="form-group">
                         <label for="title">Notification Title</label>
@@ -330,7 +329,8 @@
     </div>
 
     <script>
-        const BASE_URL = 'http://localhost:3000';
+        // const BASE_URL = 'http://54.166.206.245:3023'; // For production
+        const BASE_URL = 'http://localhost:3023'; // For local testing
         const departments = ['All Departments', 'Developers', 'Testers', 'PowerBI', 'DevOps', 'HR', 'Particular Employee'];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -371,11 +371,11 @@
             }
 
             const spaceValidator = value => {
-                if (!value) return false; // Required field
-                return !/^\s|\s$|\s{2,}/.test(value); // No leading/trailing/consecutive spaces
+                if (!value) return false;
+                return !/^\s|\s$|\s{2,}/.test(value);
             };
 
-            setupValidation('employeeId', 'employeeIdError', 'Invalid employee ID format (e.g., ATS0123)', 
+            setupValidation('employeeId', 'employeeIdError', 'Invalid employee ID format', 
                 value => value === '' || /^[ATS]{3}0(?!000)[0-9]{3}$/.test(value));
             setupValidation('title', 'titleError', 'No leading/trailing spaces or consecutive spaces allowed', 
                 value => spaceValidator(value) && /^[A-Za-z0-9.,!?-]+(\s[A-Za-z0-9.,!?-]+)*$/.test(value));
@@ -425,7 +425,7 @@
                     confirmation.classList.add('show');
                     setTimeout(() => confirmation.classList.remove('show'), 3000);
                 } catch (error) {
-                    document.getElementById('employeeIdError').textContent = `Error: ${error.message}`;
+                    document.getElementById('employeeIdError').textContent = `Server error: ${error.message}. Please check if the server is running.`;
                     document.getElementById('employeeIdError').style.display = 'block';
                     console.error('Submission error:', error);
                 }

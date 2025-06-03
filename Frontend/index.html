@@ -37,7 +37,8 @@
             flex-direction: column;
             padding: 20px;
         }
-  header {
+
+        header {
             position: relative;
             text-align: center;
             height: 140px;
@@ -47,7 +48,6 @@
             overflow: hidden;
             display: flex;
             width: 100%;
-           
             align-items: center;
             justify-content: center;
             flex-direction: column;
@@ -62,7 +62,6 @@
             font-weight: 700;
             letter-spacing: 1px;
             position: relative;
-            z-index: 2;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
@@ -78,7 +77,7 @@
             50% { transform: translateY(-50%) translateX(-50%); }
             100% { transform: translateY(0) translateX(0); }
         }
-        
+
         .banner-background {
             position: absolute;
             top: 0;
@@ -115,6 +114,7 @@
             left: 40%;
             animation-duration: 15s;
         }
+
         .container {
             width: 100%;
             max-width: 1400px;
@@ -132,16 +132,6 @@
         .form-container {
             max-width: 400px;
             margin-bottom: 2rem;
-        }
-
-        .form-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            background: var(--gradient-emerald);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .form-group {
@@ -205,7 +195,7 @@
         }
 
         .notification-item {
-            background: linear-gradient(rgb(231, 231, 255),rgb(248, 255, 248));
+            background: linear-gradient(rgb(231, 231, 255), rgb(248, 255, 248));
             border-radius: var(--border-radius);
             padding: 1.5rem;
             margin-bottom: 1rem;
@@ -226,7 +216,7 @@
         }
 
         .notification-item .timestamp {
-            font-size: 0.55rem;
+            font-size: 0.85rem;
             color: black;
         }
 
@@ -263,7 +253,7 @@
     </style>
 </head>
 <body>
-       <header>
+    <header>
         <div class="banner-background">
             <div class="circle"></div>
             <div class="circle"></div>
@@ -273,16 +263,19 @@
         <p>Stay informed with the latest updates</p>
     </header>
 
-
     <div class="container">
         <div class="main-content">
             <div class="form-container">
-               
                 <div class="form-group">
                     <label for="employeeId">Employee ID</label>
-                    <input type="text" id="employeeId" placeholder="ATS0xxx" required
-                           pattern="^[ATS]{3}0(?!000)[0-9]{3}$"
-                           title="Employee ID must be ATS0xxx (not ATS0000)">
+                    <input
+                        type="text"
+                        id="employeeId"
+                        placeholder="ATS0xxx"
+                        required
+                        pattern="^ATS0(?!000)[0-9]{3}$"
+                        title="Employee ID must be ATS0xxx (not ATS0000)"
+                    >
                     <p class="error-message" id="employeeIdError">Invalid employee ID format</p>
                 </div>
                 <button class="btn" onclick="fetchNotifications()"><i class="fas fa-search"></i> View Notifications</button>
@@ -295,19 +288,20 @@
     </div>
 
     <script>
-        const BASE_URL = 'http://localhost:3000';
+        // const BASE_URL = 'http://54.166.206.245:3023'; // For production
+        const BASE_URL = 'http://localhost:3023'; // For local testing
 
         document.addEventListener('DOMContentLoaded', () => {
             const employeeIdInput = document.getElementById('employeeId');
             const notificationsList = document.getElementById('notificationsList');
 
-            setupValidation('employeeId', /^[ATS]{3}0(?!000)[0-9]{3}$/, 'employeeIdError', 'Invalid employee ID format (e.g., ATS0123)');
+            setupValidation('employeeId', /^ATS0(?!000)[0-9]{3}$/, 'employeeIdError', 'Invalid employee ID format (e.g., ATS0123)');
 
             async function fetchNotifications() {
                 const employeeId = employeeIdInput.value.trim();
                 const errorElement = document.getElementById('employeeIdError');
 
-                if (!/^[ATS]{3}0(?!000)[0-9]{3}$/.test(employeeId)) {
+                if (!/^ATS0(?!000)[0-9]{3}$/.test(employeeId)) {
                     errorElement.style.display = 'block';
                     return;
                 }
@@ -322,7 +316,7 @@
                     displayNotifications(notifications);
                 } catch (error) {
                     console.error('Error:', error);
-                    errorElement.textContent = error.message;
+                    errorElement.textContent = `Server error: ${error.message}. Please check if the server is running.`;
                     errorElement.style.display = 'block';
                     notificationsList.innerHTML = `
                         <div class="no-data">
