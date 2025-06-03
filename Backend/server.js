@@ -43,7 +43,7 @@ async function createTables() {
 
 // CORS configuration
 const corsOptions = {
-    origin: [
+   origin: [
         'http://127.0.0.1:5503',
         'http://localhost:5503',
         'http://54.166.206.245:3023',
